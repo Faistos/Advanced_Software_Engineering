@@ -16,6 +16,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -58,10 +59,18 @@ public class VrpGlobalSpan {
         public final int[] idFuelingStation = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
     }
     private static final Character CSV_DELIMITER = ';';
+    public static class container {
+        public double[][] coords;
+        public String[][] discr;
+        public container(double[][] coords,String[][] discr){
+            this.coords = coords;
+            this.discr = discr;
+        }
+    }
 
-
-    public static void parseCSV(String csvFilePath) {
+    public static container parseCSV(String csvFilePath) {
         CSVFormat format = CSVFormat.newFormat(';');
+        container container = null;
         try (Reader reader = new FileReader("src/main/java/Basisaufgabe/dataset.csv");
 
              CSVParser csvParser = new CSVParser(reader, format)) {
@@ -69,10 +78,9 @@ public class VrpGlobalSpan {
             List<String[]> descriptionList = new ArrayList<>();
             boolean first = true;
             for (CSVRecord csvRecord : csvParser) {
-                if(first){
+                if (first) {
                     first = false;
-                }
-                else {
+                } else {
                     String id = csvRecord.get(0);
                     String type = csvRecord.get(1);
                     double longitude = Double.parseDouble(csvRecord.get(2));
@@ -90,19 +98,16 @@ public class VrpGlobalSpan {
             for (int i = 0; i < coordinatesList.size(); i++) {
                 coordinatesArray[i] = coordinatesList.get(i);
                 descriptionArray[i] = descriptionList.get(i);
+
             }
-            for (double[] coordinates : coordinatesArray) {
-                for (String[] description : descriptionArray) {
-                System.out.println("id: "+ description[0] + "  Type: "+ description[1]);
-                System.out.println("Longitude: " + coordinates[0] +" Latitude: " + coordinates[1]);
-                System.out.println();
-            }}
+            container = new container(coordinatesArray, descriptionArray);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return container;
     }
 
-    public double measure(double lat1,double  lon1,double  lat2,double  lon2){  // generally used geo measurement function
+    public static double measure(double lat1,double  lon1,double  lat2,double  lon2){  // generally used geo measurement function
         var R = 6378.137; // Radius of earth in KM
         var dLat = lat2 * Math.PI / 180 - lat1 * Math.PI / 180;
         var dLon = lon2 * Math.PI / 180 - lon1 * Math.PI / 180;
@@ -111,7 +116,23 @@ public class VrpGlobalSpan {
                         Math.sin(dLon/2) * Math.sin(dLon/2);
         var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
         var d = R * c;
-        return d * 1000; // meters
+        return d * 0.621371; // miles
+    }
+    public static List<Double> distances(container container) {
+        List<Double> distanceList = new ArrayList<>();
+        double[][] distanceArray = new double[container.coords.length][container.coords.length];
+        for(int i = 0; i < container.coords.length; i++){
+            for(int j = 0; j < container.coords.length; j++) {
+                    distanceArray[i][j] = measure(container.coords[i][0],container.coords[i][1],container.coords[j][0],container.coords[j][1]);
+            }
+
+        }
+
+
+        for (double[] dist : distanceArray) {
+            System.out.println(Arrays.toString(dist));
+        }
+        return distanceList;
     }
     /// @brief Print the solution.
     static void printSolution(
@@ -139,7 +160,7 @@ public class VrpGlobalSpan {
     }
 
     public static void main(String[] args) throws Exception {
-        parseCSV("dataset.csv");
+        distances(parseCSV("dataset.csv"));
         Loader.loadNativeLibraries();
         // Instantiate the data problem.
         final DataModel data = new DataModel();
