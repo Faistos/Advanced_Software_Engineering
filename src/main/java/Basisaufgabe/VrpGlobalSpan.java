@@ -7,17 +7,8 @@ import com.google.ortools.constraintsolver.RoutingIndexManager;
 import com.google.ortools.constraintsolver.RoutingModel;
 import com.google.ortools.constraintsolver.RoutingSearchParameters;
 import com.google.ortools.constraintsolver.main;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVParser;
-import org.apache.commons.csv.CSVRecord;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.logging.Logger;
 
 import static Komplexaufgabe.s01.ImportDatensatz.distances;
@@ -57,7 +48,6 @@ public class VrpGlobalSpan {
         public final int vehicleNumber = 4;
         // index of the depot
         public final int depot = 0;
-        public final int[] idFuelingStation = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
     }
     private static final Character CSV_DELIMITER = ';';
 
@@ -90,8 +80,8 @@ public class VrpGlobalSpan {
         logger.info("Maximum of the route distances: " + maxRouteDistance + "m");
     }
 
-    public static void main(String[] args) throws Exception {
-        distances(parseCSV("dataset.csv"));
+    public static void executeVRP() {
+
         Loader.loadNativeLibraries();
         // Instantiate the data problem.
         final DataModel data = new DataModel();
