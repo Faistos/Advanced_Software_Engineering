@@ -82,9 +82,7 @@ public class ImportDatensatz {
             }
         }
 
-        for (double[] dist : distanceArray) {
-            System.out.println(Arrays.toString(dist));
-        }
+
         return distanceArray;
     }
 }

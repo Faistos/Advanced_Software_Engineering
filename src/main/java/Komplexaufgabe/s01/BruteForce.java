@@ -1,5 +1,9 @@
 package Komplexaufgabe.s01;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Objects;
 import java.util.Random;
 
@@ -27,9 +31,11 @@ public class BruteForce {
         this.numVehicles = numVehicles;
     }
 
-    private void findRoute(){
+    private void findRoute() throws IOException {
         int[][] tempRoute = new int[this.numVehicles][Math.round((float) this.nodeTypes.length /numVehicles)];
         int[][] bestTempRoute = new int[this.numVehicles][this.nodeTypes.length];
+        FileWriter fileWriter = new FileWriter("bruteforce_gvrp.log");
+        PrintWriter printWriter = new PrintWriter(fileWriter);
         double bestDis = 9999999999999.;
         double dist = 0;
         int currentPosition = 0;
@@ -38,10 +44,14 @@ public class BruteForce {
         int skip = generatemask();
         int vehicle;
         int upperbound = this.nodeTypes.length - skip;
+        long starttime = System.currentTimeMillis();
         for(int i = 0; i < MAX_ITERATIONS; i++){
-            tempRoute = new int[this.numVehicles][Math.round((float) this.nodeTypes.length /numVehicles)];
+            int stops = 0;
+            tempRoute = new int[this.numVehicles][Math.round((float) this.nodeTypes.length /(numVehicles-1))];
             for (int j=0; j < tempRoute.length; j++){
+                int OOF =0;
                 boolean firstIn = true;
+                dist = 0;
                 for (int k = 1; k < tempRoute[j].length; k++) {
                         tempRoute[j][k]=0;
                         int nextpos = skip  + rand.nextInt(upperbound);
@@ -65,9 +75,18 @@ public class BruteForce {
                                 currentFuel = currentFuel - (this.distanceMatrix[currentPosition][nextpos]*consumptionRate);
                                 tempRoute[j][k]=nextpos;
                                 currentPosition = nextpos;
-
+                                stops++;
                             }
-                            else k--;
+                            else{
+                                k--;
+                                OOF++;
+                                if(OOF == 20){
+                                    dist = dist + this.distanceMatrix[currentPosition][0];
+                                    currentFuel = currentFuel - (this.distanceMatrix[currentPosition][0]*consumptionRate);
+                                    tempRoute[j][k]=0;
+                                    currentPosition = 0;
+                                }
+                            }
                         }
                         else  {
                             dist = dist + this.distanceMatrix[currentPosition][0];
@@ -80,17 +99,25 @@ public class BruteForce {
                 }
                 if(allVisited(skip)) break;
             }
-            if ( dist < bestDis){
+            if ( dist < bestDis && dist != 0){
                 bestDis = dist;
                 bestTempRoute = tempRoute;
+
+                String str = String.valueOf(System.currentTimeMillis())+"|"+i+"|"+ this.numVehicles + stops + "|" + (System.currentTimeMillis()-starttime)+"|"+ dist ;
+
+                printWriter.printf(str + "\n");
+
+
             }
-            System.out.println(i);
+
+
         }
+        printWriter.close();
         this.routePerVehicle = bestTempRoute;
 
     }
 
-    public int[][] getBestRoute(){
+    public int[][] getBestRoute() throws IOException {
         findRoute();
         return this.routePerVehicle;
     }
