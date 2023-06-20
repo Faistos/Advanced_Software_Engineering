@@ -15,12 +15,17 @@ import static Komplexaufgabe.s01.ImportDatensatz.parseCSV;
 
 public class main {
     public static void main(String[] args) throws IOException {
+        VrpGlobalSpan vrpGlobalSpan= new VrpGlobalSpan();
+
+        vrpGlobalSpan.executeVRP();
         ImportDatensatz.container cont = parseCSV("dataset.csv");
         double[][] dist = distances(cont);
+        vrpGlobalSpan.dataModel.setDistanceMatrix(dist);
         BruteForce bf = new BruteForce(dist, cont.discr, 4, 60);
         int[][] test = bf.getBestRoute();
         System.out.println(Arrays.deepToString(test));
-        ACO aco = new ACO();
+        AntColonyOptimization aco = new AntColonyOptimization();
+
         aco.exec();
     }
 }

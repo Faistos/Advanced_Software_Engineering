@@ -15,13 +15,13 @@ public class Google {
         public final int vehicleNumber;
         public final int depot;
         public final long[][] distanceMatrix;
-        public DataModel(LinkedList<Point> points, int vehicles) {
+        public DataModel(LinkedList<Location> locations, int vehicles) {
             vehicleNumber = vehicles;
             int dept = 0;
-            long[][] d = new long[points.size()][points.size()];
-            for (int i = 0; i < points.size(); i++) {
-                d[i] = getPointDistanceTo(points,points.get(i));
-                if (Objects.equals(points.get(i).Type, "d")) {
+            long[][] d = new long[locations.size()][locations.size()];
+            for (int i = 0; i < locations.size(); i++) {
+                d[i] = getPointDistanceTo(locations, locations.get(i));
+                if (Objects.equals(locations.get(i).Type, "d")) {
                     dept = i;
                 }
             }
@@ -29,14 +29,14 @@ public class Google {
             distanceMatrix = d;
         }
 
-        private long[] getPointDistanceTo(LinkedList<Point> points, Point self) {
-            long[] dist = new long[points.size()];
-            for (int i = 0; i < points.size(); i++) {
-                if (points.get(i).ID.equals(self.ID)) {
+        private long[] getPointDistanceTo(LinkedList<Location> locations, Location self) {
+            long[] dist = new long[locations.size()];
+            for (int i = 0; i < locations.size(); i++) {
+                if (locations.get(i).ID.equals(self.ID)) {
                     dist[i] = 0;
                     continue;
                 }
-                dist[i] = (long) self.getDistanceTo(points.get(i));
+                dist[i] = (long) self.getDistanceTo(locations.get(i));
             }
             return dist;
         }
@@ -67,10 +67,10 @@ public class Google {
         logger.info("Maximum of the route distances: " + maxRouteDistance + "m");
     }
 
-    public static void startProcess(LinkedList<Point> points, int vehicles) throws Exception {
+    public static void startProcess(LinkedList<Location> locations, int vehicles) throws Exception {
         Loader.loadNativeLibraries();
         // Instantiate the data problem.
-        final DataModel data = new DataModel(points,vehicles);
+        final DataModel data = new DataModel(locations,vehicles);
 
         // Create Routing Index Manager
         RoutingIndexManager manager =

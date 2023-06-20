@@ -11,20 +11,22 @@ import com.google.ortools.constraintsolver.main;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-import static Komplexaufgabe.s01.ImportDatensatz.distances;
-import static Komplexaufgabe.s01.ImportDatensatz.parseCSV;
-
 /** Minimal VRP.*/
 public class VrpGlobalSpan {
     private static final Logger logger = Logger.getLogger(VrpGlobalSpan.class.getName());
+    public DataModel dataModel;
 
     public VrpGlobalSpan() throws IOException {
+        this.dataModel = new DataModel();
     }
 
     // DataModel class holds the input data for the problem
-    static class DataModel {
+    public static class DataModel {
+        public DataModel(){
+
+        }
         // Distance matrix representing the distances between nodes
-        public final long[][] distanceMatrix = {
+        public long[][] distanceMatrix = {
                 // Distance matrix values
                 {0, 548, 776, 696, 582, 274, 502, 194, 308, 194, 536, 502, 388, 354, 468, 776, 662},
                 {548, 0, 684, 308, 194, 502, 730, 354, 696, 742, 1084, 594, 480, 674, 1016, 868, 1210},
@@ -48,6 +50,17 @@ public class VrpGlobalSpan {
         public final int vehicleNumber = 4;
         // index of the depot
         public final int depot = 0;
+
+        public void setDistanceMatrix(double[][] matrix){
+            long[][] longArray = new long[matrix.length][];
+            for (int i = 0; i < matrix.length; i++) {
+                longArray[i] = new long[matrix[i].length];
+                for (int j = 0; j < matrix[i].length; j++) {
+                    longArray[i][j] = (long) matrix[i][j];
+                }
+            }
+            this.distanceMatrix = longArray;
+        }
     }
     private static final Character CSV_DELIMITER = ';';
 
@@ -56,7 +69,7 @@ public class VrpGlobalSpan {
 
 
     /// @brief Print the solution.
-    static void printSolution(
+    void printSolution(
             DataModel data, RoutingModel routing, RoutingIndexManager manager, Assignment solution) {
         // Solution cost.
         logger.info("Objective : " + solution.objectiveValue());
@@ -80,7 +93,7 @@ public class VrpGlobalSpan {
         logger.info("Maximum of the route distances: " + maxRouteDistance + "m");
     }
 
-    public static void executeVRP() {
+    public void executeVRP() {
 
         Loader.loadNativeLibraries();
         // Instantiate the data problem.

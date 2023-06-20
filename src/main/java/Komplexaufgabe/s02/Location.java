@@ -1,21 +1,21 @@
 package Komplexaufgabe.s02;
 
 
-public class Point {
+public class Location {
     final String ID;
     final String Type;
     final double Longitude;
     final double Latitude;
 
 
-    public Point(String id, String type, double longitude, double latitude) {
+    public Location(String id, String type, double longitude, double latitude) {
         ID = id;
         Type = type;
         Longitude = longitude;
         Latitude = latitude;
     }
 
-    public double getDistanceTo (Point p) {
+    public double getDistanceTo (Location p) {
         double lat1 = Latitude;
         double lat2 = p.Latitude;
 

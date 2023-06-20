@@ -32,7 +32,7 @@ public class BruteForce {
     }
 
     private void findRoute() throws IOException {
-        int[][] tempRoute = new int[this.numVehicles][Math.round((float) this.nodeTypes.length /numVehicles)];
+
         int[][] bestTempRoute = new int[this.numVehicles][this.nodeTypes.length];
         FileWriter fileWriter = new FileWriter("bruteforce_gvrp.log");
         PrintWriter printWriter = new PrintWriter(fileWriter);
@@ -47,7 +47,7 @@ public class BruteForce {
         long starttime = System.currentTimeMillis();
         for(int i = 0; i < MAX_ITERATIONS; i++){
             int stops = 0;
-            tempRoute = new int[this.numVehicles][Math.round((float) this.nodeTypes.length /(numVehicles-1))];
+            int[][] tempRoute = new int[this.numVehicles][Math.round((float) this.nodeTypes.length /(numVehicles-1))];
             for (int j=0; j < tempRoute.length; j++){
                 int OOF =0;
                 boolean firstIn = true;
@@ -182,18 +182,5 @@ public class BruteForce {
             }
         }
         return index;
-    }
-
-
-
-
-    public static void main(String[] args) {
-
-        char[] nodeTypes = {'d', 'c', 'f'};
-
-        int numVehicles = 2;
-        int maxTankCapacity = 2;
-
-
     }
 }

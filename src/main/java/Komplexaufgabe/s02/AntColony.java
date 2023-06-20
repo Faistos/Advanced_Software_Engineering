@@ -3,22 +3,22 @@ package Komplexaufgabe.s02;
 import java.util.LinkedList;
 import java.util.List;
 
-public class AntHill {
+public class AntColony {
     public final Google.DataModel data;
-    public final LinkedList<Point> points;
+    public final LinkedList<Location> locations;
     public final long tankSize;
     public final double fuelUsage;
 
     public double[][] pheromoneMatrix;
     public final long maxDistancePerTank;
 
-    public AntHill(Google.DataModel d, LinkedList<Point> points, int tankSize, int usage100km) {
+    public AntColony(Google.DataModel d, LinkedList<Location> locations, int tankSize, int usage100km) {
         data = d;
-        this.points = points;
+        this.locations = locations;
         this.tankSize = tankSize;
         fuelUsage = ((double) usage100km) / ((double) 100);
         maxDistancePerTank = (long) ((double) tankSize / fuelUsage);
-        pheromoneMatrix = new double[points.size()][points.size()];
+        pheromoneMatrix = new double[locations.size()][locations.size()];
         for (int i = 0; i < pheromoneMatrix.length; i++) {
             for (int j = 0; j < pheromoneMatrix.length; j++) {
                 pheromoneMatrix[i][j] = 0.01;
@@ -28,7 +28,7 @@ public class AntHill {
 
     public List<Integer> createTHE_LIST() {
         List<Integer> a = new LinkedList<>();
-        for (int i = 0; i < points.size(); i++) {
+        for (int i = 0; i < locations.size(); i++) {
             if (i == data.depot) {
                 continue;
             }
