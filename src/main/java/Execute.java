@@ -9,7 +9,7 @@ import java.util.Arrays;
 import static Komplexaufgabe.s01.ImportDatensatz.distances;
 import static Komplexaufgabe.s01.ImportDatensatz.parseCSV;
 
-public class main {
+public class Execute {
     public static void main(String[] args) throws IOException {
         VrpGlobalSpan vrpGlobalSpan= new VrpGlobalSpan();
 
